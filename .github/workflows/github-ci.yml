@@ -1,7 +1,7 @@
 name: Application CI
 on: [push, pull_request]
 jobs:
-    pipeline:
+    backend:
         name: jhipster pipeline
         runs-on: ubuntu-latest
         if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.pull_request.title, '[skip ci]') && !contains(github.event.pull_request.title, '[ci skip]')"
@@ -20,3 +20,17 @@ jobs:
                   ./mvnw -ntp clean verify
             - name: Package application
               run: ./mvnw -ntp package -Pprod -DskipTests
+    micro-frontends:
+      name: micro frontend job
+      runs-on: ubuntu-latest
+      if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.pull_request.title, '[skip ci]') && !contains(github.event.pull_request.title, '[ci skip]')"
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions/setup-node@v2.1.4
+          with:
+            node-version: '14.15.0'
+        - name: Run tests
+          run: |
+            cd ui/widgets/conference/detailsWidget
+            npm install
+            npm test
